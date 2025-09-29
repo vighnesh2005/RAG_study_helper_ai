@@ -1,8 +1,10 @@
 import os
 import shutil
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import dotenv
+dotenv.load_dotenv()
 
+pytesseract.pytesseract.tesseract_cmd = os.environ.get('TESSERACT')
 from PIL import Image
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer

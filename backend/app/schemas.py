@@ -43,6 +43,7 @@ class Messages(base):
     message_id = Column(Integer, primary_key=True, index=True,autoincrement='auto')
     chat_id = Column(Integer, ForeignKey("chats.chat_id"))
     user_id = Column(Integer, ForeignKey("users.user_id"))
+    notebook_id = Column(Integer, ForeignKey("notebooks.notebook_id"))
     message = Column(String(1000))
     timestamp = Column(DateTime)
     is_user = Column(Boolean, default=True)

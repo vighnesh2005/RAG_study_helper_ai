@@ -4,13 +4,14 @@ from app import schemas, deps, models
 import bcrypt
 from app import middleware as middleware
 from fastapi.security import OAuth2PasswordRequestForm
+import datetime
 
 router = APIRouter()
 
 #routes for signup and login
 
 @router.post("/signup")
-def signup(data:models.UserCreate, db: Session = Depends(deps.get_db)):
+async def signup(data:models.UserCreate, db: Session = Depends(deps.get_db)):
     username = data.username
     email = data.email
     password = data.password
@@ -19,7 +20,7 @@ def signup(data:models.UserCreate, db: Session = Depends(deps.get_db)):
         return {"error":"Email already exists"}
     
     new_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    new_user = schemas.User(username=username, email=email, password=new_password)
+    new_user = schemas.User(username=username, email=email, password=new_password,created_at=datetime.datetime.now(),updated_at=datetime.datetime.now())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -27,7 +28,7 @@ def signup(data:models.UserCreate, db: Session = Depends(deps.get_db)):
     return {"message":"User created successfully","user":new_user}
 
 @router.post("/login")
-def login(data:OAuth2PasswordRequestForm = Depends(), db: Session = Depends(deps.get_db)):
+async def login(data:OAuth2PasswordRequestForm = Depends(), db: Session = Depends(deps.get_db)):
     email = data.username
     password = data.password
     user = db.query(schemas.User).filter(schemas.User.email == email).first()

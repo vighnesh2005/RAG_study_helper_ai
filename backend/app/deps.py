@@ -4,8 +4,12 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.schemas import User
 from jose import JWTError, jwt
+import dotenv
+import os
+dotenv.load_dotenv()
 
-SECRET_KEY = "giga nigga"
+
+SECRET_KEY = os.environ.get('JWT_SECRET')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

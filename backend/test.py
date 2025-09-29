@@ -32,9 +32,8 @@ def search_file(query: str, user_id: int, notebook_id: int, file_id: int, top_k:
 # 🚀 Example usage
 if __name__ == "__main__":
     query = "Who is Vighnesh Prasad"
-    results = search_file(query, user_id=2, notebook_id=1, file_id=14, top_k=1)
+    results = search_file(query, user_id=1, notebook_id=1, file_id=1, top_k=1)
 
     print("=== Query Results ===")
-    for i, doc in enumerate(results["documents"][0]):
-        print(f"Result {i+1}: {doc}")
+    print(results)
     print("=====================")

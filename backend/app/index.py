@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from app.routes import auth, user
+from app.routes import auth, user , query
 from app.database import base,engine
 from . import schemas
 
@@ -10,6 +10,7 @@ app = FastAPI()
 
 app.include_router(prefix="" , router=auth.router)
 app.include_router(prefix='/user', router=user.router)
+app.include_router(prefix='/api', router=query.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)

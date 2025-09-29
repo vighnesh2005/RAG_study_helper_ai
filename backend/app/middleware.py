@@ -4,7 +4,7 @@ from jose import jwt, JWTError
 
 SECRET_KEY = "giga nigga"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 3600
 
 def create_access_token(data: dict):
     to_encode = data.copy()
