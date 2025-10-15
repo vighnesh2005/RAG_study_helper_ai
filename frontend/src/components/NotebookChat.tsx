@@ -20,6 +20,7 @@ import { Badge } from "./ui/badge";
 import axios from "axios";
 import { Label } from "./ui/label";
 import { useState, useEffect, useRef } from "react";
+import parse from "html-react-parser";
 
 interface FileItem {
   file_id: number;
@@ -349,7 +350,7 @@ export function NotebookChat({ notebookId, onBack }) {
           </div>
 
           {/* Chats Section */}
-          <div className="border-b border-gray-200 dark:border-slate-700">
+          <div className="border-b border-gray-200 max-h-screen dark:border-slate-700 overflow-y-scroll">
             <div className="p-6 pb-3">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-gray-900 dark:text-white">Chats</h3>
@@ -480,7 +481,7 @@ export function NotebookChat({ notebookId, onBack }) {
         </div>
 
         {/* Main Chat Panel */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 ml-80 flex flex-col">
           {/* Chat Header */}
           <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-4">
             <h2 className="text-gray-900 dark:text-white">{currentChat?.chat_name}</h2>
@@ -505,7 +506,17 @@ export function NotebookChat({ notebookId, onBack }) {
                     }`}
                   >
                     <p className={message.is_user ? "text-white" : "text-gray-900 dark:text-white"}>
-                      {message.message}
+                      <div className={`max-w-[80%] rounded-2xl p-4 ${
+                        message.is_user
+                          ? "bg-blue-500 text-white"
+                          : "bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700"
+                      }`}>
+                        {message.is_user ? (
+                          <p>{message.message}</p>
+                        ) : (
+                          <div>{parse(message.message)}</div>
+                        )}
+                      </div>
                     </p>
                   </div>
                 </div>

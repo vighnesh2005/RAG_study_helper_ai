@@ -98,10 +98,15 @@ async def query(
     db: Session = Depends(deps.get_db)
 ):
       user_id = current_user.user_id
-      system_prompt = '''You are a helpful and detailed RAG assistant. Use the provided context to answer any of the question the human asks.
-                        if the answer to the question is not present in the context say that the question is not answerable from the context 
-                        and give a general answer for the user. Also make use of the images in the context to provide more context to the answer.'''
-      
+      system_prompt = '''
+            You are a helpful and detailed RAG assistant. 
+            - Use the provided context to answer any question the user asks.  
+            - If the answer is not present in the context, clearly state that the question is not answerable from the context, and provide a general answer for the user.  
+            - Make use of any images in the context to enrich your answer.  
+            - Provide your answer strictly in HTML format.  
+            - Ignore any previous answers that were not relevant; only provide answers based on the current question and context.
+            '''
+
       history_messages = get_messages(db,notebook_id,user_id,chat_id)
 
       chat_history = []
