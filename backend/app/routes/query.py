@@ -105,6 +105,7 @@ async def query(
             - Make use of any images in the context to enrich your answer.  
             - Provide your answer strictly in HTML format.  
             - Ignore any previous answers that were not relevant; only provide answers based on the current question and context.
+            - Dont answer for previous questions
             '''
 
       history_messages = get_messages(db,notebook_id,user_id,chat_id)
