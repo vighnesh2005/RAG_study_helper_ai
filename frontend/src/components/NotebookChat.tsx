@@ -336,28 +336,30 @@ export function NotebookChat({ notebookId, onBack }) {
 
       <div className="h-[calc(100vh-4rem)] flex">
         {/* Left Sidebar */}
-        <div className="w-80 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 flex flex-col min-h-0 overflow-y-auto">
-          {/* Notebook Header */}
-          <div className="p-6 border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onBack}
-              className="mb-4 -ml-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-            <h2 className="text-gray-900 dark:text-white mb-1">
-              {notebook?.title || "Notebook"}
-            </h2>
-          </div>
+        <div className="w-80 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-700 flex flex-col h-full">
 
-          {/* Chats Section */}
-          <div className="border-b border-gray-200 dark:border-slate-700 flex-shrink-0">
-            <div className="p-6 pb-3">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-gray-900 dark:text-white">Chats</h3>
+        {/* Header */}
+        <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onBack}
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">{notebook?.title || "Notebook"}</h2>
+        </div>
+
+        {/* Chats & Files section */}
+        <div className="relative flex-1 overflow-scroll flex flex-col">
+
+          {/* Scrollable list for Chats and Files */}
+          <ScrollArea className="flex-1 px-6 pb-4">{/* scrollable sidebar content */}
+            {/* Chats Section */}
+            <div className="py-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300">Chats</h3>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -368,9 +370,6 @@ export function NotebookChat({ notebookId, onBack }) {
                   New
                 </Button>
               </div>
-            </div>
-
-            <ScrollArea className="max-h-64 px-6 pb-4">
               <div className="space-y-1">
                 {chats.map((chat) => (
                   <div
@@ -384,9 +383,7 @@ export function NotebookChat({ notebookId, onBack }) {
                   >
                     <MessageSquare
                       className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                        currentChatId === chat.chat_id
-                          ? "text-blue-500"
-                          : "text-gray-400"
+                        currentChatId === chat.chat_id ? "text-blue-500" : "text-gray-400"
                       }`}
                     />
                     <div className="flex-1 min-w-0">
@@ -404,29 +401,43 @@ export function NotebookChat({ notebookId, onBack }) {
                       </p>
                     </div>
                     {chats.length > 1 && (
-                      <button
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded"
-                      >
+                      <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded">
                         <Trash2 className="w-3.5 h-3.5 text-red-500" />
                       </button>
                     )}
                   </div>
                 ))}
               </div>
-            </ScrollArea>
-          </div>
-
-          {/* Files Section */}
-          <div className="flex-1 overflow-hidden flex flex-col">
-            <div className="p-6 pb-4 flex-shrink-0">
-              <h3 className="text-gray-900 dark:text-white">Uploaded Files</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Select files to include in all chats
-              </p>
             </div>
 
-            <ScrollArea className="flex-1 px-6">
-              <div className="space-y-2 pb-4">
+            {/* Files Section */}
+            <div className="py-4 border-t border-gray-200 dark:border-slate-700 mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300">Uploaded Files</h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 rounded-lg border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-800"
+                  onClick={() => document.getElementById("fileUpload")?.click()}
+                >
+                  <Upload className="w-4 h-4" />
+                  Upload
+                </Button>
+                <input
+                  type="file"
+                  id="fileUpload"
+                  multiple
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      const filesArray = Array.from(e.target.files);
+                      setSelectedFiles(filesArray);
+                      handleUploadFiles(filesArray);
+                    }
+                  }}
+                />
+              </div>
+              <div className="space-y-2">
                 {files.map((file) => (
                   <button
                     key={file.file_id}
@@ -445,9 +456,7 @@ export function NotebookChat({ notebookId, onBack }) {
                         <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
                         <span
                           className={`text-sm truncate ${
-                            file.included
-                              ? "text-gray-900 dark:text-white"
-                              : "text-gray-500 dark:text-gray-400"
+                            file.included ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"
                           }`}
                         >
                           {file.file_name}
@@ -457,34 +466,12 @@ export function NotebookChat({ notebookId, onBack }) {
                   </button>
                 ))}
               </div>
-            </ScrollArea>
-
-            {/* Upload Button */}
-            <div className="p-6 pt-4 border-t border-gray-200 dark:border-slate-700 flex-shrink-0">
-              <Button
-                variant="outline"
-                className="w-full rounded-xl border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-800"
-                onClick={() => document.getElementById("fileUpload")?.click()}
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Upload new file
-              </Button>
-              <input
-                type="file"
-                id="fileUpload"
-                multiple
-                style={{ display: "none" }}
-                onChange={(e) => {
-                  if (e.target.files) {
-                    const filesArray = Array.from(e.target.files);
-                    setSelectedFiles(filesArray);
-                    handleUploadFiles(filesArray);
-                  }
-                }}
-              />
             </div>
-          </div>
+          </ScrollArea>
+
+          
         </div>
+      </div>
 
         {/* Main Chat Panel (Independent scroll) */}
         <div className="flex-1 flex flex-col min-h-0">
